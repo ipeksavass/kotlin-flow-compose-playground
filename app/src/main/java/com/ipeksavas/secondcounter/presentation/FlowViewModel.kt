@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class FlowViewModel : ViewModel() {
@@ -22,7 +24,7 @@ class FlowViewModel : ViewModel() {
     }
     
     init{
-        collectFlow()
+        collectFlow2()
     }
     
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -42,6 +44,29 @@ class FlowViewModel : ViewModel() {
             }.collect{ value ->  //collect fonk suspend fonk olduğu için launch ile çağırıyoruz.
                 println("The value is $value")
             }
+        }
+    }
+    
+    private fun collectFlow2(){
+        val flow1 = flow {
+            delay(1000L)
+            emit("Appetizer")
+            delay(100L)
+            emit("Main Dish")
+            delay(1000L)
+            emit("Dessert")
+        }
+        viewModelScope.launch{
+            flow1
+                .onEach {
+                    println("FLOW: $it is delivered")
+            }
+                .buffer()//zaman kaybı olmasını engelledi, veri kaybı yaşanmadı.
+                .collect{
+                    println("FLOW: Now eating $it")
+                    delay(1500L)
+                    println("FLOW: Finished eating $it")
+                }
         }
     }
 }
