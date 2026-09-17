@@ -4,6 +4,7 @@ import android.graphics.Color.red
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.launchIn
@@ -45,27 +46,30 @@ class MainViewModel: ViewModel(){
         
         viewModelScope.launch{
             // kendi ve kendinden sonraki değer için verilen koşulu gerçekleştirir.
-            var reduceResult = countDownFlow
-                .reduce { accumulator, value ->
-                    accumulator + value
-                }
+            val count = countDownFlow
+//                .reduce { accumulator, value ->
+//                    accumulator + value
+//                }
                 
-//                .filter { time ->
-//                    time % 2 == 0
-//                }
-//                //map kendisine gelen değeri içine ne yazıldıysa onunla değiştiriyor.
-//                .map { time ->
-//                    time * time
-//                }
-//                .onEach{ time ->
-//                    println(time)
-//                }
+                .filter { time ->
+                    time % 2 == 0
+                }
+                //map kendisine gelen değeri içine ne yazıldıysa onunla değiştiriyor.
+                .map { time ->
+                    time * time
+                }
+                .onEach{ time ->
+                    println(time)
+                }
 //                //collect ona ulaşan değeri fırlatıyor
 //                .collect { time ->
 //                    println("The current time is $time")
 //                }
-                
-            println("The result is $reduceResult")
+                .count{
+                    it % 2 == 0
+                }
+            
+            println("The count is $count")
         }
     }
 }
