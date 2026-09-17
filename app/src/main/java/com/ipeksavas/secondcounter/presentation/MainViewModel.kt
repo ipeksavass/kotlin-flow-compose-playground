@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -21,12 +22,24 @@ class MainViewModel: ViewModel(){
         }
     }
     
+//    val squaredData = countDownFlow
+//        .filter{
+//            it % 2 == 0
+//        }
+//        .map{
+//            it * it
+//        }
+
     
     init{
         collectFlow()
     }
 
     private fun collectFlow(){
+//      Bu şekilde launchIn kullanınca collect otomatik çalışıyor.
+        countDownFlow.onEach {
+            println(it)
+        }.launchIn(viewModelScope)
         
         viewModelScope.launch{
             countDownFlow
