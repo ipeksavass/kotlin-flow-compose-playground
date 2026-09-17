@@ -7,6 +7,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.fold
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -46,30 +47,33 @@ class MainViewModel: ViewModel(){
         
         viewModelScope.launch{
             // kendi ve kendinden sonraki değer için verilen koşulu gerçekleştirir.
-            val count = countDownFlow
+            val foldResult = countDownFlow
+                .fold(100){ accumulator, value ->
+                    accumulator + value
+                }
 //                .reduce { accumulator, value ->
 //                    accumulator + value
 //                }
                 
-                .filter { time ->
-                    time % 2 == 0
-                }
-                //map kendisine gelen değeri içine ne yazıldıysa onunla değiştiriyor.
-                .map { time ->
-                    time * time
-                }
-                .onEach{ time ->
-                    println(time)
-                }
+//                .filter { time ->
+//                    time % 2 == 0
+//                }
+//                //map kendisine gelen değeri içine ne yazıldıysa onunla değiştiriyor.
+//                .map { time ->
+//                    time * time
+//                }
+//                .onEach{ time ->
+//                    println(time)
+//                }
 //                //collect ona ulaşan değeri fırlatıyor
 //                .collect { time ->
 //                    println("The current time is $time")
 //                }
-                .count{
-                    it % 2 == 0
-                }
+////                .count{
+////                    it % 2 == 0
+////                }
             
-            println("The count is $count")
+            println("The result is $foldResult")
         }
     }
 }
