@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 import com.ipeksavas.secondcounter.presentation.MainViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.ipeksavas.secondcounter.presentation.FlowViewModel
 import com.ipeksavas.secondcounter.ui.theme.SecondCounterTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,8 +20,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent{
             SecondCounterTheme{
-                val viewModel = viewModel<MainViewModel>()
-                val time = viewModel.countDownFlow.collectAsState(initial = 100)
+                val viewModel = viewModel<FlowViewModel>()
+                val time = viewModel.flowExample.collectAsState(initial = 100)
                 Box(modifier = Modifier.fillMaxSize()){
                     Text(
                         text = time.value.toString(),
