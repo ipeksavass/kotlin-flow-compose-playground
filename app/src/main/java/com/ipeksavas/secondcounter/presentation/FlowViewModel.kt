@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onEach
@@ -49,11 +50,11 @@ class FlowViewModel : ViewModel() {
     
     private fun collectFlow2(){
         val flow1 = flow {
-            delay(1000L)
+            delay(250L)
             emit("Appetizer")
-            delay(100L)
-            emit("Main Dish")
             delay(1000L)
+            emit("Main Dish")
+            delay(100L)
             emit("Dessert")
         }
         viewModelScope.launch{
@@ -61,7 +62,8 @@ class FlowViewModel : ViewModel() {
                 .onEach {
                     println("FLOW: $it is delivered")
             }
-                .buffer()//zaman kaybı olmasını engelledi, veri kaybı yaşanmadı.
+                //.buffer()//zaman kaybı olmasını engelledi, veri kaybı yaşanmadı.
+                .conflate()//collect meşgulken gelen eski verileri atlar, aradaki yığılmayı önleyip sadece en son veriyi iletir. Veri kaybı olabilir.
                 .collect{
                     println("FLOW: Now eating $it")
                     delay(1500L)
