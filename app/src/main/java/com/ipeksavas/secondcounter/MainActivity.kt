@@ -1,5 +1,6 @@
 package com.ipeksavas.secondcounter
 
+import android.R.attr.text
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,6 +15,7 @@ import androidx.compose.ui.unit.sp
 import com.ipeksavas.secondcounter.presentation.MainViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ipeksavas.secondcounter.presentation.FlowViewModel
+import com.ipeksavas.secondcounter.presentation.SharedFlowViewModel
 import com.ipeksavas.secondcounter.presentation.StateFlowViewModel
 import com.ipeksavas.secondcounter.ui.theme.SecondCounterTheme
 
@@ -22,18 +24,29 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent{
             SecondCounterTheme{
-                val viewModel = viewModel<StateFlowViewModel>()
-                val time = viewModel.stateFlow.collectAsState(initial = 0)
-                Box(modifier = Modifier.fillMaxSize()){
-                    Button(
-                        onClick = { viewModel.incrementCounter() },
-                        modifier = Modifier.align(Alignment.Center)
-                    ) {
-                        Text(
-                            text = " Time is ${time.value}",
-                            fontSize = 30.sp)
-                    }
+                val viewModel = viewModel<SharedFlowViewModel>()
+                
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ){
+                    Text(
+                        text= "SharedFlow test ediliyor Logcat ekranında.",
+                        fontSize = 20.sp
+                    )
                 }
+                
+//                val time = viewModel.stateFlow.collectAsState(initial = 0)
+//                Box(modifier = Modifier.fillMaxSize()){
+//                    Button(
+//                        onClick = { viewModel.incrementCounter() },
+//                        modifier = Modifier.align(Alignment.Center)
+//                    ) {
+//                        Text(
+//                            text = " Time is ${time.value}",
+//                            fontSize = 30.sp)
+//                    }
+//                }
             }
         }
     }
