@@ -6,9 +6,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
@@ -26,27 +32,38 @@ class MainActivity : ComponentActivity() {
             SecondCounterTheme{
                 val viewModel = viewModel<SharedFlowViewModel>()
                 
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ){
-                    Text(
-                        text= "SharedFlow test ediliyor Logcat ekranında.",
-                        fontSize = 20.sp
-                    )
+                val snackbarHostState = remember { SnackbarHostState() }//snackbar durumunu yönetecek nesne
+                
+                //SharedFlowu Compose içerisinde güvenli bir şekilde dinleme alanı.
+                LaunchedEffect(key1 = true){
+                    viewModel.sharedFlow.collect{ squaredNumber->
+                        snackbarHostState.showSnackbar(
+                            message = "Squared number: $squaredNumber"
+                        )
+                    }
                 }
                 
-//                val time = viewModel.stateFlow.collectAsState(initial = 0)
-//                Box(modifier = Modifier.fillMaxSize()){
-//                    Button(
-//                        onClick = { viewModel.incrementCounter() },
-//                        modifier = Modifier.align(Alignment.Center)
-//                    ) {
-//                        Text(
-//                            text = " Time is ${time.value}",
-//                            fontSize = 30.sp)
-//                    }
-//                }
+                Scaffold(
+                    snackbarHost = { SnackbarHost(hostState = snackbarHostState)}
+                ){ innerPadding ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Button(
+                            onClick = {
+                                viewModel.squaredNumber(3)
+                            }
+                        ) {
+                            Text(
+                                text = "Squared Number Result",
+                                fontSize = 20.sp
+                            )
+                        }
+                    }
+                }
             }
         }
     }
